@@ -1,4 +1,23 @@
 """
+project_producer_case.py
+
+Stream JSON data to a file and - if available - a Kafka topic.
+
+Example JSON message
+{
+    "message": "I just shared a meme! It was amazing.",
+    "author": "Charlie",
+    "timestamp": "2025-01-29 14:35:20",
+    "category": "humor",
+    "sentiment": 0.87,
+    "keyword_mentioned": "meme",
+    "message_length": 42
+}
+
+"""
+
+
+"""
 json_consumer_case.py
 
 Consume json messages from a Kafka topic and visualize author counts in real-time.
@@ -48,7 +67,7 @@ load_dotenv()
 
 def get_kafka_topic() -> str:
     """Fetch Kafka topic from environment or use default."""
-    topic = os.getenv("BUZZ_TOPIC", "unknown_topic")
+    topic = os.getenv("PROJECT_TOPIC", "unknown_topic") #changed
     logger.info(f"Kafka topic: {topic}")
     return topic
 
