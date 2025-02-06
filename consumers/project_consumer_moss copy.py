@@ -106,46 +106,81 @@ plt.ion()
 #####################################
 
 
-# Initialize lists to store timestamps and sentiment scores
-timestamps = []
-sentiments = []
-
 def update_chart():
-    """Update the live line chart with sentiment trends."""
+    """Update the live chart with the latest author counts."""
+    # Clear the previous chart
     ax.clear()
 
-    # Plot sentiment over time
-    ax.plot(timestamps, sentiments, marker='o', linestyle='-', color="blue")
+    # Get the authors and counts from the dictionary
+    authors_list = list(author_counts.keys())
+    counts_list = list(author_counts.values())
 
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Sentiment Score")
-    ax.set_title("Real-Time Sentiment Analysis")
+    # Create a bar chart using the bar() method.
+    # Pass in the x list, the y list, and the color
+    ax.bar(authors_list, counts_list, color="skyblue")
 
-    plt.xticks(rotation=45, ha="right")
+    # Use the built-in axes methods to set the labels and title
+    ax.set_xlabel("Authors")
+    ax.set_ylabel("Message Counts")
+    ax.set_title("Real-Time Author Message Counts - Nolan Moss")
+
+    # Use the set_xticklabels() method to rotate the x-axis labels
+    # Pass in the x list, specify the rotation angle is 45 degrees,
+    # and align them to the right
+    # ha stands for horizontal alignment
+    ax.set_xticklabels(authors_list, rotation=45, ha="right")
+
+    # Use the tight_layout() method to automatically adjust the padding
     plt.tight_layout()
+
+    # Draw the chart
     plt.draw()
+
+    # Pause briefly to allow some time for the chart to render
     plt.pause(0.01)
 
 
 #####################################
 # Function to process a single message
 # #####################################
+
+
 def process_message(message: str) -> None:
+    """
+    Process a single JSON message from Kafka and update the chart.
+
+    Args:
+        message (str): The JSON message as a string.
+    """
     try:
-        message_dict = json.loads(message)
-        timestamp = message_dict.get("timestamp", "unknown")
-        sentiment = message_dict.get("sentiment", 0.0)
+        # Log the raw message for debugging
+        logger.debug(f"Raw message: {message}")
 
-        if timestamp != "unknown":
-            timestamps.append(timestamp)
-            sentiments.append(sentiment)
+        # Parse the JSON string into a Python dictionary
+        message_dict: dict = json.loads(message)
 
-            # Keep only the last 100 data points for visualization
-            if len(timestamps) > 100:
-                timestamps.pop(0)
-                sentiments.pop(0)
+        # Ensure the processed JSON is logged for debugging
+        logger.info(f"Processed JSON message: {message_dict}")
 
+        # Ensure it's a dictionary before accessing fields
+        if isinstance(message_dict, dict):
+            # Extract the 'author' field from the Python dictionary
+            author = message_dict.get("author", "unknown")
+            logger.info(f"Message received from author: {author}")
+
+            # Increment the count for the author
+            author_counts[author] += 1
+
+            # Log the updated counts
+            logger.info(f"Updated author counts: {dict(author_counts)}")
+
+            # Update the chart
             update_chart()
+
+            # Log the updated chart
+            logger.info(f"Chart updated successfully for message: {message}")
+        else:
+            logger.error(f"Expected a dictionary but got: {type(message_dict)}")
 
     except json.JSONDecodeError:
         logger.error(f"Invalid JSON message: {message}")
