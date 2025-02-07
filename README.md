@@ -1,3 +1,54 @@
+# Buzzline-04-Moss
+
+
+The code is a real-time Kafka consumer that processes JSON messages, extracts relevant data, and visualizes it using Matplotlib. It extracts timestamps and sentiment scores, storing them in lists to visualize sentiment trends over time using a line chart. The charts update in real-time as new messages arrive, with old data being removed to maintain a manageable dataset. The script runs continuously, handling errors, logging key events, and stopping gracefully when interrupted.
+
+
+## Running the Producer and Consumer Scripts
+
+### Activate the Python Virtual Environment
+
+```shell
+
+py -m venv .venv
+.venv\Scripts\Activate
+py -m pip install -r requirements.txt
+
+
+```
+
+### Start Producer and Consumer 
+
+```shell
+.venv\Scripts\activate
+py -m producers.project_producer_case
+
+
+
+.venv\Scripts\activate
+py -m consumers.project_consumer_moss
+
+```
+
+### Start WSL Terminal
+
+```shell
+Terminal 1
+
+PS C:\Users\nolan> wsl
+moss@InspironNolan:~$ cd ~/kafka
+moss@InspironNolan:~/kafka$ bin/zookeeper-server-start.sh config/zookeeper.properties
+
+Terminal 2
+
+PS C:\Users\nolan> wsl
+moss@InspironNolan:/mnt/c/Users/nolan$ cd ~/kafka
+moss@InspironNolan:~/kafka$ bin/kafka-server-start.sh config/server.properties
+```
+
+
+
+
 # buzzline-04-case
 
 We can analyze and visualize different types of streaming data as the information arrives.

@@ -128,7 +128,7 @@ def update_chart():
 
 
 #####################################
-# Function to process a single message
+# Function to process timestamp and sentiment data
 # #####################################
 def process_message(message: str) -> None:
     try:
